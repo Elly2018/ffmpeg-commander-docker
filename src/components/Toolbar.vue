@@ -22,6 +22,13 @@
     </b-button-group>
 
     <b-button-group class="float-right">
+
+      <b-button
+        class="ml-2 float-right"
+        variant="outline-info"
+        @click="$emit('send')">Send
+      </b-button>
+
       <b-button
         class="ml-2 float-right"
         variant="outline-danger"

@@ -1,13 +1,12 @@
-# build stage
-FROM node:lts-alpine as build-stage
-WORKDIR /app
-COPY package*.json ./
-RUN npm install
-COPY . .
-RUN npm run build
+FROM node:18.12.1
+EXPOSE 8080
+## Tool install
+RUN npm install -g http-server
 
-# production stage
-FROM nginx:stable-alpine as production-stage
-COPY --from=build-stage /app/dist /usr/share/nginx/html/ffmpeg-commander
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+## Copy node script
+RUN mkdir /app
+WORKDIR /app
+COPY dist /app
+
+## Entry point
+CMD [ "http-server"]
