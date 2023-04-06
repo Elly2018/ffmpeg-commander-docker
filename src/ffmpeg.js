@@ -252,10 +252,14 @@ function build(opt) {
     container,
   } = options;
 
-  const flags = [
-    'ffmpeg',
-    '-i', `${input}`,
-  ];
+  const flags = ['ffmpeg'];
+
+  if (options.explicit) {
+    const arg = ['-f', options.source_container];
+    flags.push(...arg);
+  }
+
+  flags.push(...['-i', `${input}`]);
 
   // Set format flags if clip options are set.
   if (options.clip) {
@@ -325,6 +329,10 @@ function build(opt) {
   if (options.loglevel !== 'none') {
     const arg = ['-loglevel', options.loglevel];
     extra.push(...arg);
+  }
+
+  if (input.startsWith('rtmp://')) {
+    extra.push(['-f', 'flv']);
   }
 
   // Set output.

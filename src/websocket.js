@@ -1,14 +1,13 @@
 import store from './store';
 
-const LOCALSTORAGE_WS_URI = 'ws_uri';
+// const LOCALSTORAGE_WS_URI = 'ws_uri';
 const RETRY_TIMEOUT = 5000;
-
-const wsUri = window.localStorage.getItem(LOCALSTORAGE_WS_URI) || 'ws://localhost:8080/ws';
 
 const websocket = {
   conn: null,
-  connect() {
+  connect(wsUri) {
     const ws = new WebSocket(wsUri);
+    ws.binaryType = 'arraybuffer';
     ws.onopen = (event) => {
       console.info('[ffmpeg-commander] - websocket connection detected.');
       const isReady = event.target.readyState === WebSocket.OPEN;
@@ -33,6 +32,13 @@ const websocket = {
       console.info('[ffmpeg-commander] - websocket connection error.', event);
       ws.close();
     };
+
+    ws.onmessage = (ev) => {
+      const enc = new TextDecoder('utf-8');
+      const buffer = new Uint8Array(ev.data);
+      console.log(JSON.parse(enc.decode(buffer)));
+    };
+
     return ws;
   },
 
@@ -46,6 +52,12 @@ const websocket = {
     if (websocket.conn) {
       websocket.conn.close();
       websocket.conn = null;
+    }
+  },
+
+  send(data) {
+    if (websocket.conn) {
+      websocket.conn.send(data);
     }
   },
 };

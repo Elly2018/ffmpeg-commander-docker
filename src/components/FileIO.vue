@@ -1,6 +1,17 @@
 <template>
   <div class="input">
     <b-form-row>
+      <b-col>
+        <b-form-group label="Server:" label-for="server">
+          <b-form-input
+            v-model="value.server"
+            :state="Boolean(value.server)"
+            placeholder="Example: ws://127.0.0.1:6001"
+            @input="update('server', $event)"
+          ></b-form-input>
+        </b-form-group>
+      </b-col>
+
       <!-- Input -->
       <b-col>
         <b-form-group label="Input:" label-for="input">

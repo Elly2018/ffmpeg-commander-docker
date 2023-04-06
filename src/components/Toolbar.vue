@@ -26,6 +26,12 @@
       <b-button
         class="ml-2 float-right"
         variant="outline-info"
+        @click="$emit('connect')">Connect
+      </b-button>
+
+      <b-button
+        class="ml-2 float-right"
+        variant="outline-info"
         @click="$emit('send')">Send
       </b-button>
 

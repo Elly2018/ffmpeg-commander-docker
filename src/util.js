@@ -11,6 +11,8 @@ function transform(formData) {
     output: io.output,
 
     // Format.
+    explicit: format.explicit,
+    source_container: format.source_container,
     container: format.container,
     clip: format.clip,
     startTime: format.startTime,

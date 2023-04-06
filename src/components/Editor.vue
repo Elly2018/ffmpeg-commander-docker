@@ -55,6 +55,8 @@
     <Toolbar
       :preset="preset"
       v-model="controls"
+      v-on:send="send"
+      v-on:connect="connect"
       v-on:reset="reset"
       v-on:save="save"
       v-on:encode="encode"
@@ -75,6 +77,7 @@ import presets from '@/presets';
 import ffmpeg from '@/ffmpeg';
 import util from '@/util';
 import storage from '@/storage';
+import ws from '@/websocket';
 
 import Presets from './Presets.vue';
 import FileIO from './FileIO.vue';
@@ -117,10 +120,13 @@ export default {
       },
       form: {
         io: {
+          server: 'ws://127.0.0.1:6001',
           input: 'input.mp4',
           output: 'output.mp4',
         },
         format: {
+          explicit: false,
+          source_container: 'mp4',
           container: 'mp4',
           clip: false,
           startTime: null,
@@ -249,6 +255,26 @@ export default {
     updateQueryParams() {
       const params = util.transformToQueryParams(this.form);
       this.$router.push({ query: params }).catch(() => {});
+    },
+    connect() {
+      console.log(this.form.io.server);
+      ws.conn = ws.connect(this.form.io.server);
+    },
+    send() {
+      const cmd2 = this.cmd.replace('ffmpeg ', '');
+      const message = {
+        name: 'process',
+        meta: '',
+        data: {
+          cwd: '',
+          filename: 'ffmpeg_dl.exe',
+          command: cmd2,
+        },
+        websocket: undefined,
+        from: undefined,
+      };
+      console.log('Sending', message);
+      ws.send(JSON.stringify(message));
     },
     reset() {
       // Restore form from default copy.
